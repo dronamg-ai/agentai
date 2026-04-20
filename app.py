@@ -3,7 +3,7 @@ import streamlit as st
 import brain
 import tools
 
-st.title(" BATAGENTIC-Why so Serious")
+st.title(" BATMAN-Why so Serious")
 
 # Initialize chat history
 if "messages" not in st.session_state:
