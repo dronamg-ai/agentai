@@ -1,27 +1,39 @@
-# app.py
+# app.py (Updated)
 import streamlit as st
 import brain
 import tools
 
-st.title(" BATMAN-Why so Serious")
+st.title("BATMAN's AI Assistant")
 
-# Initialize chat history
+# --- SIDEBAR SETTINGS ---
+st.sidebar.title("Agent Settings")
+persona = st.sidebar.selectbox(
+    "Choose Astra's Personality:",
+    ("Joker", "Alfred", "Robin", "Catwoman")
+)
+
+# Map the dropdown choice to a specific system prompt
+prompts = {
+    "Joker": "You are Joker, a witty and sarcastic assistant. Keep it brief.",
+    "Alfred": "You are a formal, polite butler. Address the user as 'Master'.",
+    "Robin": "You are an expert programmer. Explain concepts simply and provide code examples.",
+    "Catwoman": "You are a high-energy fitness coach. Encourage the user to stay active!"
+}
+current_identity = prompts[persona]
+# -----------------------
+
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Display chat history
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# React to user input
 if prompt := st.chat_input("What's up?"):
-    # Display user message in chat
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
 
-    # Process "Hands" (Tools) or "Brain"
     user_input = prompt.lower()
     
     if "time" in user_input:
@@ -32,10 +44,9 @@ if prompt := st.chat_input("What's up?"):
         query = user_input.replace("search", "").strip()
         response = tools.search_google(query)
     else:
-        # Get response from your local Ollama brain
-        response = brain.ask_ai(prompt)
+        # Pass the 'current_identity' from the sidebar to the brain
+        response = brain.ask_ai(prompt, current_identity)
 
-    # Display assistant response
     with st.chat_message("assistant"):
         st.markdown(response)
     st.session_state.messages.append({"role": "assistant", "content": response})
