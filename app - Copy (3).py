@@ -47,16 +47,8 @@ if prompt := st.chat_input("Ask Batman something..."):
 	# NEW: Check for Email keyword
     	if "email" in user_input or "inbox" in user_input:
             email_content = tools.get_emails()
-            
-            # This prompt tells the AI exactly what to do with that 688 characters
-            instruction = f"""
-            I have fetched the user's unread emails. 
-            Here is the raw data: {email_content}
-            
-            Based ONLY on the data above, provide a summary of the 3 emails found.
-            If the data is empty, say 'No unread emails.'
-            """
-            response = brain.ask_ai(instruction, current_identity)
+            # Feed the emails to the Brain so it can summarize them nicely
+            response = brain.ask_ai(f"Here are my recent emails. Summarize them for me: {email_content}", current_identity)
 
 
 # -----------------------

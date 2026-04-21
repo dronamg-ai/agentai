@@ -8,22 +8,6 @@ st.title("BATMAN's AI Assistant")
 
 # --- SIDEBAR SETTINGS ---
 st.sidebar.title("Agent Settings")
-
-persona = st.sidebar.selectbox(
-    "Choose Astra's Personality:",
-    ("Joker", "Alfred", "Robin", "Catwoman")
-)
-
-# Map the dropdown choice to a specific system prompt
-prompts = {
-    "Joker": "You are Joker, a witty and sarcastic assistant. Keep it brief.",
-    "Alfred": "You are a formal, polite butler. Address the user as 'Master'.",
-    "Robin": "You are an expert programmer. Explain concepts simply and provide code examples.",
-    "Catwoman": "You are a high-energy fitness coach. Encourage the user to stay active!"
-}
-current_identity = prompts[persona]
-
-
 # 1. Add the Clear Chat Button
 if st.sidebar.button("🗑️ Clear Chat History"):
     st.session_state.messages = []
@@ -38,27 +22,19 @@ if uploaded_file is not None:
     file_context = stringio.read()
     st.sidebar.success(f"Loaded: {uploaded_file.name}")
 
-# Inside app.py chat loop
+persona = st.sidebar.selectbox(
+    "Choose Astra's Personality:",
+    ("Joker", "Alfred", "Robin", "Catwoman")
+)
 
-if prompt := st.chat_input("Ask Batman something..."):
-    user_input = prompt.lower()
-    # ... message display code ...
-    with st.spinner("Checking your inbox..."):
-	# NEW: Check for Email keyword
-    	if "email" in user_input or "inbox" in user_input:
-            email_content = tools.get_emails()
-            
-            # This prompt tells the AI exactly what to do with that 688 characters
-            instruction = f"""
-            I have fetched the user's unread emails. 
-            Here is the raw data: {email_content}
-            
-            Based ONLY on the data above, provide a summary of the 3 emails found.
-            If the data is empty, say 'No unread emails.'
-            """
-            response = brain.ask_ai(instruction, current_identity)
-
-
+# Map the dropdown choice to a specific system prompt
+prompts = {
+    "Joker": "You are Joker, a witty and sarcastic assistant. Keep it brief.",
+    "Alfred": "You are a formal, polite butler. Address the user as 'Master'.",
+    "Robin": "You are an expert programmer. Explain concepts simply and provide code examples.",
+    "Catwoman": "You are a high-energy fitness coach. Encourage the user to stay active!"
+}
+current_identity = prompts[persona]
 # -----------------------
 
 if "messages" not in st.session_state:

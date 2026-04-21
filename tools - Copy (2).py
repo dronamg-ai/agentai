@@ -33,18 +33,7 @@ def get_emails():
     
     summary = ""
     for msg in messages:
-        # Fetch the actual content of the email
-        msg_data = service.users().messages().get(userId='me', id=msg['id']).execute()
-        
-        # Get the 'snippet' (the first few lines of the email)
-        snippet = msg_data.get('snippet', '')
-        
-        if snippet:
-            summary += f"Email ID {msg['id']}: {snippet}\n\n"
-        else:
-            summary += f"Email ID {msg['id']}: (No text preview available)\n\n"
-
-    # Print to terminal one last time to be 100% sure
-    print(f"--- DEBUG: Summary content is {len(summary)} characters long ---")
-    
+        txt = service.users().messages().get(userId='me', id=msg['id']).execute()
+        snippet = txt['snippet']
+        summary += f"- {snippet}\n"
     return summary

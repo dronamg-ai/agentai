@@ -6,8 +6,7 @@ client = OpenAI(
     api_key="ollama" 
 )
 
-# brain.py
-def ask_ai(user_prompt, system_identity):
+def ask_ai(user_prompt, system_identity): # Added system_identity parameter
     try:
         response = client.chat.completions.create(
             model="llama3.2",
@@ -16,7 +15,6 @@ def ask_ai(user_prompt, system_identity):
                 {"role": "user", "content": user_prompt}
             ]
         )
-        # MUST have .choices[0] to get the first response
         return response.choices[0].message.content
     except Exception as e:
         return f"Brain Error: {e}"
